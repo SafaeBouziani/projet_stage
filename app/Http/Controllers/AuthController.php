@@ -29,7 +29,7 @@ class AuthController extends Controller
                 // If user exists, log them in
                 Auth::login($user);
                 \Log::info('User logged in', ['user' => $user]);
-                return redirect()->intended('dashboard');
+                return redirect()->intended('/user/dashboard');
             }
 
             // Check if a user exists with the email
@@ -53,7 +53,7 @@ class AuthController extends Controller
             // Log the user in
             Auth::login($user);
             \Log::info('User logged in', ['user' => $user]);
-            return redirect()->intended('dashboard');
+            return redirect()->intended('/user/dashboard');
         } catch (\Throwable $th) {
             \Log::error('Error in Google callback', ['error' => $th->getMessage()]);
             return redirect('/login')->with('error', 'Something went wrong');
