@@ -29,7 +29,15 @@ Route::middleware('guest')->group(function () {
 // Admin dashboard
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    //Route::get('/admin/profile' , [AdminController::class, 'profile'])->name('admin.profile');
+    Route::prefix('users')->group(function () {
+        Route::get('', [UserController::class, 'index'])->name('users');
+        Route::get('create', [UserController::class, 'create'])->name('users.create');
+        Route::post('store', [UserController::class, 'store'])->name('users.store');
+        Route::get('show/{id}', [UserController::class, 'show'])->name('users.show');
+        Route::get('edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('edit/{id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');    
+    });
     Route::get('/admin/requests', [AdminController::class, 'requests'])->name('admin.requests');
     Route::post('/admin/requests/{id}/approve', [AdminController::class, 'approveRequest'])->name('admin.requests.approve');
     Route::post('/admin/requests/{id}/decline', [AdminController::class, 'declineRequest'])->name('admin.requests.decline');
@@ -38,7 +46,6 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 // User dashboard
 Route::middleware(['auth', 'verified', 'user'])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-    //Route::get('/user/profile' , [AdminController::class, 'profile'])->name('user.profile');
 });
 
 
