@@ -29,6 +29,7 @@ Route::middleware('guest')->group(function () {
 // Admin dashboard
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    //Route::get('/admin/profile' , [AdminController::class, 'profile'])->name('admin.profile');
     Route::get('/admin/requests', [AdminController::class, 'requests'])->name('admin.requests');
     Route::post('/admin/requests/{id}/approve', [AdminController::class, 'approveRequest'])->name('admin.requests.approve');
     Route::post('/admin/requests/{id}/decline', [AdminController::class, 'declineRequest'])->name('admin.requests.decline');
@@ -37,7 +38,9 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 // User dashboard
 Route::middleware(['auth', 'verified', 'user'])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+    //Route::get('/user/profile' , [AdminController::class, 'profile'])->name('user.profile');
 });
+
 
 
 
