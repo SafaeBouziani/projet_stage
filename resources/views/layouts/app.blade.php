@@ -9,7 +9,7 @@
         <meta name="author" content="">
 
 
-        <title>{{ config('app.name', 'demande_carte') }}</title>
+        <title>Card Request</title>
                 <!-- Custom fonts for this template-->
         <link href="{{ asset('assets_admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
         <link

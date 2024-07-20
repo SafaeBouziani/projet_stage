@@ -1,12 +1,11 @@
 @extends('layouts.admin.app')
 
-@section('title', 'List Users')
+@section('title', '')
 
 @section('content')
 <div class="py-12">
     <div class="container">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="mb-0">List Users</h1>
+        <div class="d-flex align-items-center justify-content-end mb-4">
             <a href="{{ route('users.create') }}" class="btn btn-primary">Add User</a>
         </div>
         <hr />
@@ -15,19 +14,31 @@
                 {{ session('success') }}
             </div>
         @endif
-        <div class="card">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">List Users</h6>
+            </div>
             <div class="card-body">
-                <table class="table table-hover">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>Id</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if($users->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @if($users->count() > 0)
                             @foreach($users as $rs)
                                 <tr>
                                     <td class="align-middle">{{ $rs->id }}</td>
@@ -51,10 +62,13 @@
                                 <td class="text-center" colspan="4">User not found</td>
                             </tr>
                         @endif
-                    </tbody>
-                </table>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
     </div>
 </div>
 <style>

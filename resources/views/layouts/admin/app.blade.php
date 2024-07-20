@@ -9,7 +9,7 @@
         <meta name="author" content="">
 
 
-        <title>{{ config('app.name', 'demande_carte') }}</title>
+        <title>Card Request</title>
                 <!-- Custom fonts for this template-->
         <link href="{{ asset('assets_admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
         <link
@@ -18,6 +18,7 @@
    
         <!-- Custom styles for this template-->
         <link href="{{ asset('assets_admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('assets_admin/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -82,13 +83,13 @@
     
         <!-- Custom scripts for all pages-->
         <script src="{{ asset('assets_admin/js/sb-admin-2.min.js') }}"></script>
-    
+
         <!-- Page level plugins -->
-        <script src="{{ asset('assets_admin/vendor/chart.js/Chart.min.js') }}"></script>
-    
+        <script src="{{ asset('assets_admin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('assets_admin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
         <!-- Page level custom scripts -->
-        <script src="{{ asset('assets_admin/js/demo/chart-area-demo.js') }}"></script>
-        <script src="{{ asset('assets_admin/js/demo/chart-pie-demo.js') }}"></script>
+        <script src="{{ asset('assets_admin/js/demo/datatables-demo.js') }}"></script>
     
     </body>
     

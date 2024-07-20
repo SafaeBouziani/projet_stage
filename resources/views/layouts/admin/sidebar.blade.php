@@ -3,7 +3,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+            <i><img src="{{ asset('uit_logo.png') }}" style="border-radius: 50%; width:40px; height:40px;" alt="logo" ></i>
         </div>
         <div class="sidebar-brand-text mx-3">Card Request</div>
     </a>
