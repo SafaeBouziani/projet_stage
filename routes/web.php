@@ -6,6 +6,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RequestController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -46,6 +47,13 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 // User dashboard
 Route::middleware(['auth', 'verified', 'user'])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+    Route::prefix('request')->group(function () {
+        Route::get('create', [RequestController::class, 'create'])->name('request.create');
+        Route::post('store', [RequestController::class, 'store'])->name('request.store');
+        Route::get('show/{id}', [RequestController::class, 'show'])->name('request.show');
+        Route::get('edit/{id}', [RequestController::class, 'edit'])->name('request.edit');
+        Route::put('edit/{id}', [RequestController::class, 'update'])->name('request.update');    
+    });
 });
 
 

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\CardInfo;
+use App\Models\CardRequest;
 
 class User extends Authenticatable
 {
@@ -49,5 +51,14 @@ class User extends Authenticatable
     public function role()
     {
         return $this->getRoleNames();
+    }
+    public function cardRequests()
+    {
+        return $this->hasMany(CardRequest::class);
+    }
+
+    public function cardInfo()
+    {
+        return $this->hasOne(CardInfo::class);
     }
 }

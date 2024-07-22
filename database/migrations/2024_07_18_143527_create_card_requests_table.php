@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('card_requests', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('card_info_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });

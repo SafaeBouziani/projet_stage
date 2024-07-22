@@ -18,14 +18,9 @@
             <span>Dashboard</span></a>
     </li>
     <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{ route('request.create') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Make a request</span></a>
-    </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>My request</span></a>
     </li>
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('profile.edit') }}">
