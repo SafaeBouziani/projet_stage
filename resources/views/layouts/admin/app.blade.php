@@ -10,6 +10,7 @@
 
 
         <title>Card Request</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
                 <!-- Custom fonts for this template-->
         <link href="{{ asset('assets_admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
         <link

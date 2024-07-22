@@ -23,7 +23,7 @@
             <span>Users</span></a>
     </li>
     <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{ route('admin.requests') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Requests</span></a>
     </li>

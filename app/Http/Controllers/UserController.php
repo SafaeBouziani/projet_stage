@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CardRequest;
 
 class UserController extends Controller
 {
     public function dashboard()
     {
-        return view('dashboard');
+        $user = Auth::user();
+        $requests = CardRequest::where('user_id', $user->id)->get();
+        return view('dashboard', compact('requests'));
     }
 
     public function index()

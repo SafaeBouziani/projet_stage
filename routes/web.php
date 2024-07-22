@@ -30,7 +30,7 @@ Route::middleware('guest')->group(function () {
 // Admin dashboard
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::prefix('users')->group(function () {
+    Route::prefix('admin/users')->group(function () {
         Route::get('', [UserController::class, 'index'])->name('users');
         Route::get('create', [UserController::class, 'create'])->name('users.create');
         Route::post('store', [UserController::class, 'store'])->name('users.store');
@@ -39,9 +39,13 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::put('edit/{id}', [UserController::class, 'update'])->name('users.update');
         Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');    
     });
-    Route::get('/admin/requests', [AdminController::class, 'requests'])->name('admin.requests');
-    Route::post('/admin/requests/{id}/approve', [AdminController::class, 'approveRequest'])->name('admin.requests.approve');
-    Route::post('/admin/requests/{id}/decline', [AdminController::class, 'declineRequest'])->name('admin.requests.decline');
+    Route::prefix('admin/requests')->group(function () {
+        Route::get('/admin/requests', [RequestController::class, 'index'])->name('admin.requests');
+        Route::post('/admin/requests/{id}/approve', [RequestController::class, 'approveRequest'])->name('admin.requests.approve');
+        Route::post('/admin/requests/{id}/decline', [RequestController::class, 'declineRequest'])->name('admin.requests.decline');
+        Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');    
+    });
+   
 });
 
 // User dashboard
@@ -49,6 +53,7 @@ Route::middleware(['auth', 'verified', 'user'])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::prefix('request')->group(function () {
         Route::get('create', [RequestController::class, 'create'])->name('request.create');
+        Route::get('', [RequestController::class, 'index'])->name('requests');
         Route::post('store', [RequestController::class, 'store'])->name('request.store');
         Route::get('show/{id}', [RequestController::class, 'show'])->name('request.show');
         Route::get('edit/{id}', [RequestController::class, 'edit'])->name('request.edit');

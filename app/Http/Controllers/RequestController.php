@@ -55,4 +55,21 @@ class RequestController extends Controller
         // Redirect to a different page with a success message
         return redirect()->route('user.dashboard')->with('success', 'Your request has been created successfully!');
     }
+
+
+    public function index()
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('admin')) {
+            $requests = CardRequest::with('user')->get();
+            return view('admin.request.index', compact('requests'));
+        } else {
+            $requests = CardRequest::where('user_id', $user->id)->with('user')->get();
+            return view('dashboard', compact('requests'));
+        }
+
+        
+    }
+
 }
