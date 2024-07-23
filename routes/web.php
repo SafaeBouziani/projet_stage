@@ -40,9 +40,12 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');    
     });
     Route::prefix('admin/requests')->group(function () {
-        Route::get('/admin/requests', [RequestController::class, 'index'])->name('admin.requests');
-        Route::post('/admin/requests/{id}/approve', [RequestController::class, 'approveRequest'])->name('admin.requests.approve');
-        Route::post('/admin/requests/{id}/decline', [RequestController::class, 'declineRequest'])->name('admin.requests.decline');
+        Route::get('', [RequestController::class, 'index'])->name('admin.requests');
+        Route::get('pending', [RequestController::class, 'index_p'])->name('requests.pending');
+        Route::get('approved', [RequestController::class, 'index_a'])->name('requests.approved');
+        Route::get('rejected', [RequestController::class, 'index_d'])->name('requests.rejected');
+        Route::post('{id}/approve', [RequestController::class, 'approveRequest'])->name('admin.requests.approve');
+        Route::post('{id}/decline', [RequestController::class, 'declineRequest'])->name('admin.requests.decline');
         Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');    
     });
    

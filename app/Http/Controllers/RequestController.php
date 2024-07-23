@@ -28,11 +28,13 @@ class RequestController extends Controller
                 'institution' => 'required|string',
                 'position' => 'required|string',
                 'type' => 'required|string',
+                'photo'=> 'required|image',
             ]);
     
             // Get the ID of the currently authenticated user
             $userId = Auth::id();
-    
+
+            $validatedData['photo']= $request->file('photo')->store('photos');
             // Create a new CardInfo record
             $cardInfo = CardInfo::create([
                 'user_id' => $userId,
@@ -70,6 +72,21 @@ class RequestController extends Controller
         }
 
         
+    }
+    public function index_p()
+    {
+        $requests = CardRequest::where('status', 'pending')->with('user')->get();
+        return view('admin.request.pending', compact('requests'));   
+    }
+    public function index_a()
+    {
+        $requests = CardRequest::where('status', 'approved')->with('user')->get();
+        return view('admin.request.approved', compact('requests'));   
+    }
+    public function index_d()
+    {
+        $requests = CardRequest::where('status', 'rejected')->with('user')->get();
+        return view('admin.request.rejected', compact('requests'));   
     }
 
 }

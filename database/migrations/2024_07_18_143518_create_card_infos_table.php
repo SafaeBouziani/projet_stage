@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('institution');
             $table->string('position');
             $table->enum('type', ['academic', 'administrative']);
-            $table->text('photo');
+            $table->text('photo')->nullable();
             $table->timestamps();
         });
     }

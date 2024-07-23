@@ -1,13 +1,13 @@
 @extends('layouts.admin.app')
 
-@section('title', 'List Pending Requests')
+@section('title', 'List Approved Requests')
 
 @section('content')
 <div class="py-12">
     <div class="container">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">List Pending Requests</h6>
+                <h6 class="m-0 font-weight-bold text-primary">List Approved Requests</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -40,9 +40,8 @@
                                     <td class="align-middle">{{ $rs->status }}</td>
                                     <td class="align-middle">
                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                            <a href="#" type="button" class="btn btn-secondary">Detail</a>
-                                            <a href="#" type="button" class="btn btn-secondary bg-gradient-success">Approve</a>
-                                            <a href="#" type="button" class="btn btn-danger custom-rounded-left">Reject</a>
+                                            <a href="{{ route('users.show', $rs->id) }}" type="button" class="btn btn-secondary">Detail</a>
+                                            <a href="{{ route('users.show', $rs->id) }}" type="button" class="btn btn-secondary bg-gradient-warning">Undo</a>
                                         </div>
                                     </td>
                                 </tr>
