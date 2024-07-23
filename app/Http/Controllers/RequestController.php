@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;   
 use App\Models\CardRequest;
 use App\Models\CardInfo;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\RequestStatusNotification;
+use PDF;
+
 
 class RequestController extends Controller
 {
@@ -98,6 +102,73 @@ class RequestController extends Controller
             return view('request.show', compact('request', 'info'));
         }
         
+    }
+
+    public function destroy(string $id)
+    {
+        $request = CardRequest::findOrFail($id);
+  
+        $request->delete();
+  
+        return redirect()->route('admin.request.index')->with('success', 'request deleted successfully');
+    }
+
+    public function approveRequest (string $id)
+    {
+        $request = CardRequest::findOrFail($id);
+
+        // Change status to approved
+        $request->status = 'approved';
+        $request->save();
+
+        // Generate PDFs
+        $this->generatePDFs($request);
+
+        // Send notification to user
+        Notification::send($request->user, new RequestStatusNotification($request));
+
+        return redirect()->route('admin.dashboard')->with('success', 'Request approved and PDFs generated.');
+    }
+
+    public function declineRequest (string $id)
+    {
+        $request = CardRequest::findOrFail($id);
+
+        // Change status to rejected
+        $request->status = 'rejected';
+        $request->save();
+
+        // Send notification to user
+        Notification::send($request->user, new RequestStatusNotification($request));
+
+        return redirect()->route('admin.dashboard')->with('success', 'Request rejected.');
+    }
+
+    public function undoDecision(string $id)
+    {
+        $request = CardRequest::findOrFail($id);
+
+        // Change status to rejected
+        $request->status = 'pending';
+        $request->save();
+        return redirect()->route('admin.dashboard')->with('success', 'Your decision has been undone.');
+        
+    }
+   
+
+    private function generatePDFs(CardRequest $request)
+    {
+        // Logic to generate PDFs for card and receipt
+        $cardInfo = CardInfo::find($request->card_info_id);
+
+        // Generate Card PDF
+        $cardFrontPdf = PDF::loadView('pdf.card_front', compact('cardInfo'))->save(storage_path('app/public/cards/card_front_'.$request->id.'.pdf'));
+
+        // Generate Back Side PDF
+        $cardBackPdf = PDF::loadView('pdf.card_back', compact('cardInfo'))->save(storage_path('app/public/cards/card_back_'.$request->id.'.pdf'));
+
+        // Generate Receipt PDF
+        $receiptPdf = PDF::loadView('pdf.receipt', compact('cardInfo'))->save(storage_path('app/public/receipts/receipt_'.$request->id.'.pdf'));
     }
     
 }

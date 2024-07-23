@@ -6,6 +6,11 @@
 <div class="py-12">
     <div class="container">
         <div class="card shadow mb-4">
+            @if(session('success'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('success') }}
+                    </div>
+            @endif
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">List Rejected Requests</h6>
             </div>
@@ -41,7 +46,10 @@
                                     <td class="align-middle">
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a href="{{ route('admin.request.show', $rs->id) }}" type="button" class="btn btn-secondary">Detail</a>
-                                            <a href="{{ route('decision.undo', $rs->id) }}" type="button" class="btn btn-secondary bg-gradient-warning">Undo</a>
+                                            <form action="{{ route('decision.undo', $rs->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-secondary bg-gradient-warning">Undo</button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

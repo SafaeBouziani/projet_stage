@@ -45,9 +45,10 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::get('approved', [RequestController::class, 'index_a'])->name('requests.approved');
         Route::get('rejected', [RequestController::class, 'index_d'])->name('requests.rejected');
         Route::get('show/{id}', [RequestController::class, 'show'])->name('admin.request.show');
-        Route::post('{id}/approve', [RequestController::class, 'approveRequest'])->name('admin.requests.approve');
-        Route::post('{id}/decline', [RequestController::class, 'declineRequest'])->name('admin.requests.decline');
-        Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');    
+        Route::post('approve/{id}', [RequestController::class, 'approveRequest'])->name('admin.request.approve');
+        Route::post('decline/{id}', [RequestController::class, 'declineRequest'])->name('admin.request.decline');
+        Route::delete('destroy/{id}', [RequestController::class, 'destroy'])->name('requests.destroy'); 
+        Route::post('undo/{id}', [RequestController::class, 'undoDecision'])->name('decision.undo');   
     });
    
 });

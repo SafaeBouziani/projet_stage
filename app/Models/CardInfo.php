@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\cardRequest;
@@ -10,6 +11,9 @@ use App\Models\cardRequest;
 class CardInfo extends Model
 {
     use HasFactory;
+
+    
+
 
     // Specify the table associated with the model if different from the default
     protected $table = 'card_infos';

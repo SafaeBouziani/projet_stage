@@ -13,8 +13,9 @@ class UserController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
+        $notifications = Auth::user()->notifications;
         $requests = CardRequest::where('user_id', $user->id)->get();
-        return view('dashboard', compact('requests'));
+        return view('dashboard', compact('requests','notifications'));
     }
 
     public function index()

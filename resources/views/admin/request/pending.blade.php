@@ -6,6 +6,11 @@
 <div class="py-12">
     <div class="container">
         <div class="card shadow mb-4">
+            @if(session('success'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('success') }}
+                    </div>
+            @endif
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">List Pending Requests</h6>
             </div>
@@ -41,8 +46,17 @@
                                     <td class="align-middle">
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a href="{{ route('admin.request.show', $rs->id) }}" type="button" class="btn btn-secondary">Detail</a>
-                                            <a href="#" type="button" class="btn btn-secondary bg-gradient-success">Approve</a>
-                                            <a href="#" type="button" class="btn btn-danger custom-rounded-left">Reject</a>
+                                            <!-- Approve Button -->
+                                            <form action="{{ route('admin.request.approve', $rs->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-secondary bg-gradient-success">Approve</button>
+                                            </form>
+
+                                            <!-- Reject Button -->
+                                            <form action="{{ route('admin.request.decline', $rs->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger custom-rounded-left">Reject</button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

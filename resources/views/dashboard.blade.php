@@ -54,7 +54,7 @@
                                         <td class="align-middle">{{ $request->status }}</td>
                                         <td class="align-middle">
                                             <div class="btn-group" role="group" aria-label="Basic example">
-                                                <a href="{{ route('request.edit', $request->id) }}" type="button" class="btn btn-warning {{ $request->status !== 'declined' ? 'disabled' : '' }}">Edit</a>
+                                                <a href="{{ route('request.edit', $request->id) }}" type="button" class="btn btn-warning {{ $request->status !== 'rejected' ? 'disabled' : '' }}">Edit</a>
                                                 <a href="{{ route('request.show', $request->id) }}" type="button" class="btn btn-secondary">Detail</a>
                                             </div>
                                         </td>
