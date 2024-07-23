@@ -40,8 +40,8 @@
                                     <td class="align-middle">{{ $rs->status }}</td>
                                     <td class="align-middle">
                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                            <a href="{{ route('users.show', $rs->id) }}" type="button" class="btn btn-secondary">Detail</a>
-                                            <a href="{{ route('users.show', $rs->id) }}" type="button" class="btn btn-secondary bg-gradient-warning">Undo</a>
+                                            <a href="{{ route('admin.request.show', $rs->id) }}" type="button" class="btn btn-secondary">Detail</a>
+                                            <a href="{{ route('decision.undo', $rs->id) }}" type="button" class="btn btn-secondary bg-gradient-warning">Undo</a>
                                         </div>
                                     </td>
                                 </tr>

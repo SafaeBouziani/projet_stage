@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Import the Auth facade
-use Illuminate\Support\Facades\DB;   // Import the DB facade
+use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\DB;   
 use App\Models\CardRequest;
 use App\Models\CardInfo;
 
@@ -28,14 +28,12 @@ class RequestController extends Controller
                 'institution' => 'required|string',
                 'position' => 'required|string',
                 'type' => 'required|string',
-                'photo'=> 'required|image',
+                'photo' => 'required|image',
             ]);
     
-            // Get the ID of the currently authenticated user
             $userId = Auth::id();
-
-            $validatedData['photo']= $request->file('photo')->store('photos');
-            // Create a new CardInfo record
+            $photoPath = $request->file('photo')->store('public/photos');
+    
             $cardInfo = CardInfo::create([
                 'user_id' => $userId,
                 'full_name' => $validatedData['name'],
@@ -45,18 +43,19 @@ class RequestController extends Controller
                 'institution' => $validatedData['institution'],
                 'position' => $validatedData['position'],
                 'type' => $validatedData['type'],
+                'photo' => basename($photoPath), // Save only the file name
             ]);
     
-            // Create a new CardRequest record
+
             CardRequest::create([
                 'user_id' => $userId,
                 'card_info_id' => $cardInfo->id,
             ]);
         });
-
-        // Redirect to a different page with a success message
+    
         return redirect()->route('user.dashboard')->with('success', 'Your request has been created successfully!');
     }
+    
 
 
     public function index()
@@ -89,4 +88,16 @@ class RequestController extends Controller
         return view('admin.request.rejected', compact('requests'));   
     }
 
+    public function show(string $id)
+    {
+        $request = CardRequest::findOrFail($id);
+        $info = CardInfo::findOrFail($request->card_info_id);
+        if (Auth::user()->hasRole('admin')){
+            return view('admin.request.show', compact('request', 'info'));
+        }else{
+            return view('request.show', compact('request', 'info'));
+        }
+        
+    }
+    
 }

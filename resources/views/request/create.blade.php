@@ -18,11 +18,11 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Full Name</label>
-                            <input type="text" name="name" class="form-control" placeholder="{{ Auth::user()->name }}" required>
+                            <input type="text" name="name" class="form-control" value="{{ Auth::user()->name }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="{{ Auth::user()->email }}" required>
+                            <input type="email" name="email" class="form-control" value="{{ Auth::user()->email }}" required>
                         </div>
                     </div>
                     <div class="row mb-3">
