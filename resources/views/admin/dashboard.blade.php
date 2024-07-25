@@ -4,8 +4,18 @@
     <div class="container mt-4">
         <h1>Dashboard</h1>
         <br>
+        @if(session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+            @if(session('cardPdfPath') && session('receiptPdfPath'))
+                <p><a href="{{ session('cardPdfPath') }}" target="_blank">Download Card PDF</a></p>
+                <p><a href="{{ session('receiptPdfPath') }}" target="_blank">Download Receipt PDF</a></p>
+            @endif
+        </div>
+        @endif
         <br>
         <div class="row">
+
             <div class="col-md-4 mb-4">
                 <div class="card" style="width: 100%;">
                     <img class="card-img-top" src="{{ asset('yelloworange.jpg') }}" alt="Card image cap">

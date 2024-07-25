@@ -26,7 +26,6 @@
 </head>
 <body>
     <div class="card">
-        <img src="{{ asset('storage/university_logo.png') }}" alt="University Logo" class="logo">
         <div class="info">
             <p><strong>University Name</strong></p>
             <p>Address: 123 University St, City, Country</p>

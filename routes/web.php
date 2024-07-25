@@ -65,6 +65,10 @@ Route::middleware(['auth', 'verified', 'user'])->group(function () {
         Route::put('edit/{id}', [RequestController::class, 'update'])->name('request.update');    
     });
 });
+// routes/web.php
+//Route::get('/test-pdf', [RequestController::class, 'generatePDFs']);
+
+
 
 
 

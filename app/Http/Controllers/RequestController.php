@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RequestNotification;
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\DB;   
 use App\Models\CardRequest;
@@ -16,7 +18,15 @@ class RequestController extends Controller
 {
     public function create()
     {
-        return view('request.create');
+        $user = Auth::user();
+        $requestCount = CardRequest::where('user_id', $user->id)->count();
+        $cardInfo = CardInfo::where('user_id', $user->id)->first();
+    
+        if ($requestCount >= 3) {
+            return redirect()->route('user.dashboard')->with('error', 'You have already made 3 requests. You cannot submit any more requests.');
+        }
+    
+        return view('request.create',compact('cardInfo'));
     }
 
     public function store(Request $request)
@@ -36,21 +46,42 @@ class RequestController extends Controller
             ]);
     
             $userId = Auth::id();
+            
+            // Store the photo and get the path
             $photoPath = $request->file('photo')->store('public/photos');
+            $photoFilename = basename($photoPath); // Save only the file name
     
-            $cardInfo = CardInfo::create([
-                'user_id' => $userId,
-                'full_name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-                'phone_number' => $validatedData['phone'],
-                'CIN' => $validatedData['cin'],
-                'institution' => $validatedData['institution'],
-                'position' => $validatedData['position'],
-                'type' => $validatedData['type'],
-                'photo' => basename($photoPath), // Save only the file name
-            ]);
+            // Check if the user already has a CardInfo
+            $cardInfo = CardInfo::where('user_id', $userId)->first();
     
-
+            if ($cardInfo) {
+                // Update existing CardInfo
+                $cardInfo->update([
+                    'full_name' => $validatedData['name'],
+                    'email' => $validatedData['email'],
+                    'phone_number' => $validatedData['phone'],
+                    'CIN' => $validatedData['cin'],
+                    'institution' => $validatedData['institution'],
+                    'position' => $validatedData['position'],
+                    'type' => $validatedData['type'],
+                    'photo' => $photoFilename, // Save only the file name
+                ]);
+            } else {
+                // Create new CardInfo
+                $cardInfo = CardInfo::create([
+                    'user_id' => $userId,
+                    'full_name' => $validatedData['name'],
+                    'email' => $validatedData['email'],
+                    'phone_number' => $validatedData['phone'],
+                    'CIN' => $validatedData['cin'],
+                    'institution' => $validatedData['institution'],
+                    'position' => $validatedData['position'],
+                    'type' => $validatedData['type'],
+                    'photo' => $photoFilename, // Save only the file name
+                ]);
+            }
+    
+            // Create a new CardRequest
             CardRequest::create([
                 'user_id' => $userId,
                 'card_info_id' => $cardInfo->id,
@@ -71,7 +102,7 @@ class RequestController extends Controller
             return view('admin.request.index', compact('requests'));
         } else {
             $requests = CardRequest::where('user_id', $user->id)->with('user')->get();
-            return view('dashboard', compact('requests'));
+            return view('user.dashboard', compact('requests'));
         }
 
         
@@ -110,65 +141,118 @@ class RequestController extends Controller
   
         $request->delete();
   
-        return redirect()->route('admin.request.index')->with('success', 'request deleted successfully');
+        return redirect()->route('admin.requests')->with('success', 'request deleted successfully');
     }
 
-    public function approveRequest (string $id)
+
+    
+    public function approveRequest(string $id)
     {
         $request = CardRequest::findOrFail($id);
-
+    
         // Change status to approved
         $request->status = 'approved';
         $request->save();
-
+    
         // Generate PDFs
-        $this->generatePDFs($request);
+        // Generate Card PDF
+        $cardPdf = Pdf::loadView('pdf.card', ['request' => $request]);
+        $cardPdfPath = storage_path('app/public/cards/' . $request->id . '_card.pdf');
+        $cardPdf->save($cardPdfPath);
 
+        // Generate Receipt PDF
+        $receiptPdf = Pdf::loadView('pdf.receipt', ['request' => $request]);
+        $receiptPdfPath = storage_path('app/public/receipts/' . $request->id . '_receipt.pdf');
+        $receiptPdf->save($receiptPdfPath);
+    
         // Send notification to user
-        Notification::send($request->user, new RequestStatusNotification($request));
-
+        Mail::to($request->user->email)->send(new RequestNotification($request));
+    
         return redirect()->route('admin.dashboard')->with('success', 'Request approved and PDFs generated.');
     }
-
-    public function declineRequest (string $id)
+    
+    public function declineRequest(string $id)
     {
         $request = CardRequest::findOrFail($id);
-
+    
         // Change status to rejected
         $request->status = 'rejected';
         $request->save();
-
+    
         // Send notification to user
-        Notification::send($request->user, new RequestStatusNotification($request));
-
+        Mail::to($request->user->email)->send(new RequestNotification($request));
+    
         return redirect()->route('admin.dashboard')->with('success', 'Request rejected.');
     }
-
+    
     public function undoDecision(string $id)
     {
         $request = CardRequest::findOrFail($id);
-
-        // Change status to rejected
+    
+        // Change status to pending
         $request->status = 'pending';
         $request->save();
+        Mail::to($request->user->email)->send(new RequestNotification($request));
+    
         return redirect()->route('admin.dashboard')->with('success', 'Your decision has been undone.');
-        
-    }
-   
-
-    private function generatePDFs(CardRequest $request)
-    {
-        // Logic to generate PDFs for card and receipt
-        $cardInfo = CardInfo::find($request->card_info_id);
-
-        // Generate Card PDF
-        $cardFrontPdf = PDF::loadView('pdf.card_front', compact('cardInfo'))->save(storage_path('app/public/cards/card_front_'.$request->id.'.pdf'));
-
-        // Generate Back Side PDF
-        $cardBackPdf = PDF::loadView('pdf.card_back', compact('cardInfo'))->save(storage_path('app/public/cards/card_back_'.$request->id.'.pdf'));
-
-        // Generate Receipt PDF
-        $receiptPdf = PDF::loadView('pdf.receipt', compact('cardInfo'))->save(storage_path('app/public/receipts/receipt_'.$request->id.'.pdf'));
     }
     
+    public function edit(string $id)
+    {
+        $request = CardRequest::findOrFail($id);
+        $cardInfo = CardInfo::findOrFail($request->card_info_id);
+  
+        return view('admin.users.edit', compact('request','cardInfo'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Start a database transaction
+        DB::transaction(function () use ($request, $id) {
+            // Validate incoming request data
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email',
+                'phone' => 'required|string|max:10',
+                'cin' => 'required|string',
+                'institution' => 'required|string',
+                'position' => 'required|string',
+                'type' => 'required|string',
+                'photo' => 'nullable|image', // Photo is nullable in case user doesn't want to update it
+            ]);
+
+            $userId = Auth::id();
+            $cardRequest = CardRequest::findOrFail($id);
+            $cardInfo = CardInfo::findOrFail($cardRequest->card_info_id);
+
+            // Check if the authenticated user owns the CardInfo
+            if ($cardInfo->user_id !== $userId) {
+                abort(403, 'Unauthorized action.');
+            }
+
+            // Handle photo upload if a new photo is provided
+            if ($request->hasFile('photo')) {
+                $photoPath = $request->file('photo')->store('public/photos');
+                $photoFilename = basename($photoPath);
+                $cardInfo->photo = $photoFilename; // Update the photo only if a new one is uploaded
+            }
+
+            // Update the CardInfo
+            $cardInfo->update([
+                'full_name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'phone_number' => $validatedData['phone'],
+                'CIN' => $validatedData['cin'],
+                'institution' => $validatedData['institution'],
+                'position' => $validatedData['position'],
+                'type' => $validatedData['type'],
+                // 'photo' => $photoFilename, // This is handled above if a new photo is uploaded
+            ]);
+            $cardRequest->update([
+                'status'=>'pending',
+            ]);
+        });
+
+        return redirect()->route('user.dashboard')->with('success', 'Your card information has been updated successfully!');
+    }
 }

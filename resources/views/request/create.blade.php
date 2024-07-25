@@ -18,46 +18,63 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Full Name</label>
-                            <input type="text" name="name" class="form-control" value="{{ Auth::user()->name }}" required>
+                            <input type="text" name="name" class="form-control" value="{{ old('name', $cardInfo->full_name ?? Auth::user()->name) }}" required readonly>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ Auth::user()->email }}" required>
+                            <input type="email" name="email" class="form-control" value="{{ old('email', $cardInfo->email ?? Auth::user()->email) }}" required readonly>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Phone Number</label>
-                            <input type="tel" name="phone" class="form-control" placeholder="Phone Number" required>
+                            <input type="tel" name="phone" class="form-control" value="{{ old('phone', $cardInfo->phone_number ?? '') }}" placeholder="Phone Number" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">CIN</label>
-                            <input type="text" name="cin" class="form-control" placeholder="CIN" required>
+                            <input type="text" name="cin" class="form-control" value="{{ old('cin', $cardInfo->CIN ?? '') }}" placeholder="CIN" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Institution</label>
-                            <input type="text" name="institution" class="form-control" placeholder="Institution" required>
+                            <input type="text" name="institution" class="form-control" value="{{ old('institution', $cardInfo->institution ?? '') }}" placeholder="Institution" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Position</label>
-                            <input type="text" name="position" class="form-control" placeholder="Position" required>
+                            <input type="text" name="position" class="form-control" value="{{ old('position', $cardInfo->position ?? '') }}" placeholder="Position" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
                             <label class="form-label">Type</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="type" id="academic" value="academic" checked>
-                                <label class="form-check-label" for="user">
+                                <input class="form-check-input" type="radio" name="type" id="academic" value="academic" {{ old('type', $cardInfo->type ?? 'academic') == 'academic' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="academic">
                                     Academic Staff
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="type" id="administrative" value="academic">
-                                <label class="form-check-label" for="admin">
+                                <input class="form-check-input" type="radio" name="type" id="administrative" value="administrative" {{ old('type', $cardInfo->type ?? 'administrative') == 'administrative' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="administrative">
                                     Administrative Staff
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">Reason for Another Card Request</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="motive" id="losing_card" value="losing_card" {{ old('motive', $cardInfo->motive) == 'losing_card' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="losing_card">
+                                    Losing Card
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="motive" id="info_change" value="info_change" {{ old('motive', $cardInfo->motive) == 'info_change' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="info_change">
+                                    Info Change
                                 </label>
                             </div>
                         </div>
@@ -81,5 +98,4 @@
         cursor: pointer;
     }
 </style>
-
 @endsection
